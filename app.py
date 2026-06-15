@@ -1,20 +1,15 @@
 from __future__ import annotations
 
-from pathlib import Path
-
 from flask import Flask, render_template, request
 
 from sdes import Trace, decrypt_bits, encrypt_bits
 
 
-BASE_DIR = Path(__file__).resolve().parent
-PROJECT_ROOT = BASE_DIR.parent
-
 app = Flask(
     __name__,
-    static_folder=str(PROJECT_ROOT),
+    static_folder="static",
     static_url_path="/static",
-    template_folder=str(BASE_DIR / "templates"),
+    template_folder="templates",
 )
 
 
