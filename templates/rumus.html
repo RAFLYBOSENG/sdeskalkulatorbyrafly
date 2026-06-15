@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rumus & Tabel S-DES - Interactive Learning Simulator</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="bi bi-shield-lock-fill me-2 fs-4"></i>
+                <span>S-DES Simulator</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="bi bi-cpu me-1"></i> Simulator</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/materi"><i class="bi bi-book me-1"></i> Materi S-DES</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/rumus"><i class="bi bi-grid-3x3-gap me-1"></i> Rumus & Tabel</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tentang"><i class="bi bi-info-circle me-1"></i> Tentang Aplikasi</a>
+                    </li>
+                    <!-- Theme Toggle Switch -->
+                    <li class="nav-item ms-lg-3">
+                        <div class="form-check form-switch d-flex align-items-center pt-2 pt-lg-0">
+                            <i id="themeToggleIcon" class="bi bi-sun-fill text-warning me-2 fs-5"></i>
+                            <input class="form-check-input" type="checkbox" id="themeToggle" role="switch">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <!-- Title Card -->
+        <div class="card p-4 mb-4">
+            <h1 class="fw-bold text-primary mb-3"><i class="bi bi-grid-3x3-gap me-2"></i> Rumus & Tabel Acuan S-DES</h1>
+            <p class="text-muted fs-5 mb-0">Lihat semua rumus matematika, konstanta permutasi, serta tabel S-Box yang digunakan dalam komputasi Simplified DES. Gunakan simulator S-Box di bawah ini untuk belajar lookup nilai secara interaktif.</p>
+        </div>
+
+        <!-- S-Box Interactive Widget -->
+        <div class="card p-4 mb-5 shadow-sm">
+            <h3 class="fw-bold text-dark mb-3"><i class="bi bi-lightbulb text-warning me-2"></i> 1. Visualisasi S-Box Interaktif</h3>
+            <p class="text-muted">Masukkan 4-bit biner dan pilih S-Box untuk melihat visualisasi pencarian nilai baris, kolom, dan sel hasil secara otomatis pada tabel.</p>
+            
+            <div class="row g-4 mt-1">
+                <!-- Inputs for S-Box simulator -->
+                <div class="col-md-4">
+                    <div class="p-3 bg-light rounded h-100">
+                        <h5 class="fw-bold mb-3">Konfigurasi Input</h5>
+                        
+                        <!-- 4-bit Input -->
+                        <div class="mb-3">
+                            <label for="sboxSimInput" class="form-label fw-semibold">Bit Input (4-Bit Binary)</label>
+                            <input type="text" class="form-control font-monospace text-center fs-5" id="sboxSimInput" value="1010" maxlength="4" autocomplete="off">
+                            <div class="form-text">Masukkan biner seperti 1010, 0111, dll.</div>
+                        </div>
+
+                        <!-- S-Box Selector -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Pilih S-Box</label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="sboxSelect" id="sboxSelect0" value="0" checked>
+                                    <label class="form-check-label fw-bold" for="sboxSelect0">S-Box S0</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="sboxSelect" id="sboxSelect1" value="1">
+                                    <label class="form-check-label fw-bold" for="sboxSelect1">S-Box S1</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Explanation Area -->
+                <div class="col-md-4">
+                    <div class="p-3 border rounded h-100 d-flex flex-column">
+                        <h5 class="fw-bold mb-3">Penjelasan Langkah</h5>
+                        <div id="sboxInfoBits" class="mb-3"></div>
+                        <div id="sboxInfoExplain" class="mb-3 small"></div>
+                        <div id="sboxInfoResult" class="p-3 bg-success-subtle text-success border border-success-subtle rounded mt-auto text-center font-monospace"></div>
+                    </div>
+                </div>
+
+                <!-- S-Box Matrices tables -->
+                <div class="col-md-4">
+                    <div class="p-3 border rounded h-100">
+                        <h5 class="fw-bold mb-3">Tabel S-Box</h5>
+                        
+                        <!-- S0 Table -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary mb-2">Tabel S-Box S0</h6>
+                            <table class="sbox-table text-center font-monospace small" id="tableS0">
+                                <thead>
+                                    <tr>
+                                        <th>S0</th><th>00</th><th>01</th><th>10</th><th>11</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td class="table-secondary fw-bold">00</td><td>1</td><td>0</td><td>3</td><td>2</td></tr>
+                                    <tr><td class="table-secondary fw-bold">01</td><td>3</td><td>2</td><td>1</td><td>0</td></tr>
+                                    <tr><td class="table-secondary fw-bold">10</td><td>0</td><td>2</td><td>1</td><td>3</td></tr>
+                                    <tr><td class="table-secondary fw-bold">11</td><td>3</td><td>1</td><td>3</td><td>2</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- S1 Table -->
+                        <div>
+                            <h6 class="fw-bold text-primary mb-2">Tabel S-Box S1</h6>
+                            <table class="sbox-table text-center font-monospace small" id="tableS1">
+                                <thead>
+                                    <tr>
+                                        <th>S1</th><th>00</th><th>01</th><th>10</th><th>11</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td class="table-secondary fw-bold">00</td><td>0</td><td>1</td><td>2</td><td>3</td></tr>
+                                    <tr><td class="table-secondary fw-bold">01</td><td>2</td><td>0</td><td>1</td><td>3</td></tr>
+                                    <tr><td class="table-secondary fw-bold">10</td><td>3</td><td>0</td><td>1</td><td>0</td></tr>
+                                    <tr><td class="table-secondary fw-bold">11</td><td>2</td><td>1</td><td>0</td><td>3</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Left Side: Mathematical Formulas -->
+            <div class="col-lg-6">
+                <div class="card p-4 h-100">
+                    <h3 class="fw-bold text-dark mb-4"><i class="bi bi-hash text-primary me-2"></i> 2. Rumus Matematika</h3>
+                    
+                    <h6 class="fw-bold text-primary mb-2">Fungsi Feistel (Round Function)</h6>
+                    <p class="small text-muted mb-1">Operasi Feistel memproses data input kiri dan kanan dengan sub-kunci (SK):</p>
+                    <div class="math-formula">fk(L, R) = (L \oplus F(R, SK), R)</div>
+
+                    <h6 class="fw-bold text-primary mt-4 mb-2">Fungsi Swap (Pertukaran Kiri/Kanan)</h6>
+                    <p class="small text-muted mb-1">Menukar bagian kiri dan kanan 4-bit setelah Round 1:</p>
+                    <div class="math-formula">SW(L, R) = (R, L)</div>
+
+                    <h6 class="fw-bold text-primary mt-4 mb-2">Persamaan Ciphertext Utuh (S-DES)</h6>
+                    <p class="small text-muted mb-1">Alur matematika lengkap untuk enkripsi plaintext (P) dengan kunci K:</p>
+                    <div class="math-formula">Ciphertext = IP^{-1}(fk_2(SW(fk_1(IP(P)))))</div>
+
+                    <h6 class="fw-bold text-primary mt-4 mb-2">Pencarian Baris & Kolom S-Box</h6>
+                    <p class="small text-muted mb-1">Jika input biner S-Box adalah 4 bit (b1, b2, b3, b4):</p>
+                    <div class="math-formula">Baris = (b_1, b_4), Kolom = (b_2, b_3)</div>
+                </div>
+            </div>
+
+            <!-- Right Side: Permutation Matrices -->
+            <div class="col-lg-6">
+                <div class="card p-4 h-100">
+                    <h3 class="fw-bold text-dark mb-4"><i class="bi bi-hash text-primary me-2"></i> 3. Tabel Konstanta Permutasi</h3>
+                    
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-primary mb-2">Pembangkit Kunci P10 (P10 Permutation)</h6>
+                        <table class="permutation-table text-center">
+                            <tr><td>Posisi Out</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
+                            <tr><td>Posisi In</td><td>3</td><td>5</td><td>2</td><td>7</td><td>4</td><td>10</td><td>1</td><td>9</td><td>8</td><td>6</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-primary mb-2">Pembangkit Kunci P8 (P8 Permutation)</h6>
+                        <table class="permutation-table text-center">
+                            <tr><td>Posisi Out</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr>
+                            <tr><td>Posisi In</td><td>6</td><td>3</td><td>7</td><td>4</td><td>8</td><td>5</td><td>10</td><td>9</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-primary mb-2">Initial Permutation IP</h6>
+                        <table class="permutation-table text-center">
+                            <tr><td>Posisi Out</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr>
+                            <tr><td>Posisi In</td><td>2</td><td>6</td><td>3</td><td>1</td><td>4</td><td>8</td><td>5</td><td>7</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-primary mb-2">Inverse Initial Permutation IP&sup1;&#8315;&sup1;</h6>
+                        <table class="permutation-table text-center">
+                            <tr><td>Posisi Out</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr>
+                            <tr><td>Posisi In</td><td>4</td><td>1</td><td>3</td><td>5</td><td>7</td><td>2</td><td>8</td><td>6</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-primary mb-2">Expansion Permutation EP</h6>
+                        <table class="permutation-table text-center">
+                            <tr><td>Posisi Out</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr>
+                            <tr><td>Posisi In</td><td>4</td><td>1</td><td>2</td><td>3</td><td>2</td><td>3</td><td>4</td><td>1</td></tr>
+                        </table>
+                    </div>
+
+                    <div>
+                        <h6 class="fw-bold text-primary mb-2">Permutasi P4</h6>
+                        <table class="permutation-table text-center">
+                            <tr><td>Posisi Out</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+                            <tr><td>Posisi In</td><td>2</td><td>4</td><td>3</td><td>1</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="backToTopBtn" class="back-to-top" title="Kembali ke atas">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer class="py-4 mt-5 border-top bg-light text-center">
+        <div class="container">
+            <p class="text-muted mb-0">&copy; 2026 S-DES Interactive Learning Simulator. Dibuat untuk kepentingan edukasi mahasiswa.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle with Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+</body>
+</html>

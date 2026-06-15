@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang Aplikasi - Interactive Learning Simulator</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="bi bi-shield-lock-fill me-2 fs-4"></i>
+                <span>S-DES Simulator</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="bi bi-cpu me-1"></i> Simulator</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/materi"><i class="bi bi-book me-1"></i> Materi S-DES</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/rumus"><i class="bi bi-grid-3x3-gap me-1"></i> Rumus & Tabel</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/tentang"><i class="bi bi-info-circle me-1"></i> Tentang Aplikasi</a>
+                    </li>
+                    <!-- Theme Toggle Switch -->
+                    <li class="nav-item ms-lg-3">
+                        <div class="form-check form-switch d-flex align-items-center pt-2 pt-lg-0">
+                            <i id="themeToggleIcon" class="bi bi-sun-fill text-warning me-2 fs-5"></i>
+                            <input class="form-check-input" type="checkbox" id="themeToggle" role="switch">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-8">
+                <!-- Main Header Card -->
+                <div class="card p-4 mb-4 text-center">
+                    <i class="bi bi-info-circle-fill text-primary display-4 mb-3"></i>
+                    <h2 class="fw-bold mb-2">Tentang Aplikasi</h2>
+                    <h5 class="text-muted fw-normal">S-DES Interactive Learning Simulator</h5>
+                    <hr class="w-25 mx-auto text-primary" style="height: 3px;">
+                    <p class="text-secondary mt-3">
+                        Aplikasi web edukatif ini dikembangkan khusus untuk membantu mahasiswa, akademisi, dan pemula mempelajari mekanisme kerja algoritma enkripsi simetris <strong>Simplified Data Encryption Standard (S-DES)</strong> secara visual dan interaktif.
+                    </p>
+                </div>
+
+                <!-- Features Details -->
+                <div class="card p-4 mb-4">
+                    <h4 class="fw-bold text-dark mb-3"><i class="bi bi-star-fill text-warning me-2"></i> Fitur Unggulan</h4>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded bg-light h-100">
+                                <h6 class="fw-bold text-primary"><i class="bi bi-hand-index-thumb-fill me-1"></i> Bit Box Interaktif</h6>
+                                <p class="small text-muted mb-0">Pengguna tidak hanya mengetik biner biasa, tetapi dapat mengklik bit secara langsung pada kotak untuk mengubah status <code>0</code> &harr; <code>1</code> secara dinamis.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded bg-light h-100">
+                                <h6 class="fw-bold text-primary"><i class="bi bi-eye-fill me-1"></i> 21 Tahapan Visual</h6>
+                                <p class="small text-muted mb-0">Menjelaskan secara mendalam setiap langkah algoritma mulai dari generasi kunci (K1/K2) hingga permutasi akhir IP&sup1;&#8315;&sup1; lengkap dengan rumus dan tabel.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded bg-light h-100">
+                                <h6 class="fw-bold text-primary"><i class="bi bi-journal-check me-1"></i> Catatan Buku & Ekspor</h6>
+                                <p class="small text-muted mb-0">Menyediakan panel format ringkas yang siap disalin langsung ke buku catatan praktikum mahasiswa. Dilengkapi fitur ekspor TXT dan PDF.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded bg-light h-100">
+                                <h6 class="fw-bold text-primary"><i class="bi bi-lightbulb-fill me-1"></i> Mode Belajar & S-Box</h6>
+                                <p class="small text-muted mb-0">Memiliki Mode Belajar untuk menyembunyikan/menampilkan materi tambahan secara dinamis, serta widget visualisasi lookup tabel S-Box.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instructions Guidelines -->
+                <div class="card p-4 mb-4">
+                    <h4 class="fw-bold text-dark mb-3"><i class="bi bi-compass-fill text-success me-2"></i> Panduan Penggunaan</h4>
+                    <ol class="mb-0">
+                        <li class="mb-2"><strong>Konfigurasi Input:</strong> Pilih operasi yang diinginkan (Enkripsi atau Dekripsi).</li>
+                        <li class="mb-2"><strong>Tentukan Bit Plaintext & Key:</strong> Isi data 8-bit plaintext/ciphertext dan 10-bit kunci. Anda dapat mengetikkan teks biner secara langsung atau memanfaatkan <strong>Bit Box</strong> yang dapat diklik.</li>
+                        <li class="mb-2"><strong>Aktifkan Mode Belajar:</strong> Direkomendasikan untuk tetap mengaktifkan Mode Belajar untuk melihat penjelasan menyeluruh dan visual tabel S-Box.</li>
+                        <li class="mb-2"><strong>Jalankan:</strong> Klik tombol <strong>"Proses Algoritma"</strong> untuk memproses komputasi secara instan.</li>
+                        <li class="mb-2"><strong>Eksplorasi Langkah Perhitungan:</strong> Buka accordion di bagian bawah untuk melihat 21 langkah. Klik tautan pada Navigator Sidebar di sebelah kanan untuk menggulir ke langkah spesifik dengan cepat.</li>
+                        <li><strong>Simpan Catatan:</strong> Gunakan tombol "Salin" atau "Ekspor" di panel ringkasan hasil untuk mengunduh laporan perhitungan Anda.</li>
+                    </ol>
+                </div>
+
+                <!-- Educational Purpose -->
+                <div class="card p-4">
+                    <h4 class="fw-bold text-dark mb-3"><i class="bi bi-mortarboard-fill text-info me-2"></i> Tujuan Pembelajaran</h4>
+                    <p class="text-secondary mb-0">
+                        Pemahaman algoritma kriptografi modern sering kali sulit jika hanya membaca buku teks. Simulator ini dirancang untuk menyembatani teori dan praktik, memberikan pengalaman belajar mandiri yang intuitif bagi mahasiswa dalam mata kuliah Keamanan Informasi, Keamanan Jaringan, Kriptografi, atau Ethical Hacking.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="backToTopBtn" class="back-to-top" title="Kembali ke atas">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer class="py-4 mt-5 border-top bg-light text-center">
+        <div class="container">
+            <p class="text-muted mb-0">&copy; 2026 S-DES Interactive Learning Simulator. Dibuat untuk kepentingan edukasi mahasiswa.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle with Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+</body>
+</html>

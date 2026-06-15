@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materi S-DES - Interactive Learning Simulator</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="bi bi-shield-lock-fill me-2 fs-4"></i>
+                <span>S-DES Simulator</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="bi bi-cpu me-1"></i> Simulator</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/materi"><i class="bi bi-book me-1"></i> Materi S-DES</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/rumus"><i class="bi bi-grid-3x3-gap me-1"></i> Rumus & Tabel</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tentang"><i class="bi bi-info-circle me-1"></i> Tentang Aplikasi</a>
+                    </li>
+                    <!-- Theme Toggle Switch -->
+                    <li class="nav-item ms-lg-3">
+                        <div class="form-check form-switch d-flex align-items-center pt-2 pt-lg-0">
+                            <i id="themeToggleIcon" class="bi bi-sun-fill text-warning me-2 fs-5"></i>
+                            <input class="form-check-input" type="checkbox" id="themeToggle" role="switch">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <div class="row g-4">
+            <!-- Sidebar Navigation Materi -->
+            <div class="col-lg-3">
+                <div class="card p-3 sticky-top" style="top: 90px; z-index: 10;">
+                    <h5 class="fw-bold mb-3 pb-2 border-bottom">Topik Pembahasan</h5>
+                    <div class="list-group list-group-flush small">
+                        <a href="#kriptografi" class="list-group-item list-group-item-action border-0 py-2.5 rounded ps-2"><i class="bi bi-chevron-right me-1 text-primary"></i> Apa itu Kriptografi?</a>
+                        <a href="#des" class="list-group-item list-group-item-action border-0 py-2.5 rounded ps-2"><i class="bi bi-chevron-right me-1 text-primary"></i> Apa itu DES?</a>
+                        <a href="#sdes" class="list-group-item list-group-item-action border-0 py-2.5 rounded ps-2"><i class="bi bi-chevron-right me-1 text-primary"></i> Apa itu S-DES?</a>
+                        <a href="#feistel" class="list-group-item list-group-item-action border-0 py-2.5 rounded ps-2"><i class="bi bi-chevron-right me-1 text-primary"></i> Struktur Feistel</a>
+                        <a href="#perbedaan" class="list-group-item list-group-item-action border-0 py-2.5 rounded ps-2"><i class="bi bi-chevron-right me-1 text-primary"></i> Perbedaan DES vs S-DES</a>
+                        <a href="#kelebihan" class="list-group-item list-group-item-action border-0 py-2.5 rounded ps-2"><i class="bi bi-chevron-right me-1 text-primary"></i> Kelebihan & Kekurangan</a>
+                        <a href="#penerapan" class="list-group-item list-group-item-action border-0 py-2.5 rounded ps-2"><i class="bi bi-chevron-right me-1 text-primary"></i> Contoh Penerapan</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="col-lg-9">
+                <!-- Title -->
+                <div class="card p-4 mb-4">
+                    <h1 class="fw-bold text-primary mb-3"><i class="bi bi-journal-bookmark-fill me-2"></i> Materi Pembelajaran S-DES</h1>
+                    <p class="text-muted fs-5 mb-0">Halaman ini memuat ringkasan materi untuk memahami landasan teori kriptografi simetris serta alur kerja algoritma Simplified DES.</p>
+                </div>
+
+                <!-- 1. Kriptografi -->
+                <section id="kriptografi" class="card p-4 mb-4">
+                    <h3 class="fw-bold text-dark mb-3"><i class="bi bi-hash text-primary me-2"></i> 1. Apa itu Kriptografi?</h3>
+                    <p><strong>Kriptografi</strong> (cryptography) berasal dari bahasa Yunani, yaitu <em>"kryptos"</em> (tersembunyi) dan <em>"graphein"</em> (menulis). Secara umum, kriptografi adalah ilmu dan seni menjaga keamanan pesan dengan cara menyamarkannya menjadi format yang tidak dapat dibaca tanpa pengetahuan khusus.</p>
+                    
+                    <div class="bg-light p-3 rounded mb-3">
+                        <h6 class="fw-bold"><i class="bi bi-arrow-right-circle"></i> Komponen Utama:</h6>
+                        <ul class="mb-0">
+                            <li><strong>Plaintext (Teks Terang):</strong> Pesan asli yang dapat dibaca.</li>
+                            <li><strong>Ciphertext (Teks Sandi):</strong> Pesan hasil penyamaran yang tidak dapat dibaca secara langsung.</li>
+                            <li><strong>Key (Kunci):</strong> Parameter berupa deretan bit untuk mengendalikan proses enkripsi dan dekripsi.</li>
+                            <li><strong>Enkripsi (Encryption):</strong> Proses mengubah plaintext menjadi ciphertext.</li>
+                            <li><strong>Dekripsi (Decryption):</strong> Proses mengembalikan ciphertext menjadi plaintext asli.</li>
+                        </ul>
+                    </div>
+                    <p>Kriptografi dibagi menjadi dua jenis utama berdasarkan kuncinya: <strong>Kriptografi Kunci Simetris</strong> (menggunakan kunci yang sama untuk enkripsi dan dekripsi) dan <strong>Kriptografi Kunci Asimetris</strong> (menggunakan pasangan kunci publik dan kunci privat).</p>
+                </section>
+
+                <!-- 2. DES -->
+                <section id="des" class="card p-4 mb-4">
+                    <h3 class="fw-bold text-dark mb-3"><i class="bi bi-hash text-primary me-2"></i> 2. Apa itu Data Encryption Standard (DES)?</h3>
+                    <p><strong>DES (Data Encryption Standard)</strong> adalah algoritma enkripsi kunci simetris yang dikembangkan pada awal tahun 1970-an oleh IBM dan diadopsi oleh pemerintah Amerika Serikat sebagai standar resmi pada tahun 1977.</p>
+                    <p>DES memproses data dalam blok berukuran <strong>64-bit</strong> menggunakan kunci internal berukuran <strong>56-bit</strong> (ditambah 8 bit paritas untuk total 64 bit). Meskipun sangat populer selama beberapa dekade, DES kini dianggap tidak aman untuk data sensitif karena panjang kuncinya yang terlalu pendek, sehingga rentan terhadap serangan <em>brute-force</em> modern. Posisi DES kini digantikan oleh AES (Advanced Encryption Standard).</p>
+                </section>
+
+                <!-- 3. S-DES -->
+                <section id="sdes" class="card p-4 mb-4">
+                    <h3 class="fw-bold text-dark mb-3"><i class="bi bi-hash text-primary me-2"></i> 3. Apa itu Simplified DES (S-DES)?</h3>
+                    <p><strong>Simplified DES (S-DES)</strong> adalah versi sederhana dari algoritma DES yang dirancang oleh Edward Schaefer untuk kepentingan pendidikan (pedagogis). S-DES dikembangkan agar mahasiswa dan pemula dapat mempelajari mekanisme internal DES secara manual dengan coretan kertas.</p>
+                    <p>Meskipun memiliki struktur dan properti operasi yang mirip dengan DES (seperti permutasi, ekspansi, substitusi S-box, dan XOR), S-DES beroperasi pada skala ukuran data yang jauh lebih kecil:</p>
+                    <ul>
+                        <li>Ukuran Blok Data (Plaintext/Ciphertext): <strong>8-bit</strong></li>
+                        <li>Ukuran Kunci Awal (Key): <strong>10-bit</strong></li>
+                        <li>Ukuran Subkey Putaran (K1 & K2): <strong>8-bit</strong></li>
+                        <li>Jumlah Putaran (Round): <strong>2 Putaran</strong></li>
+                    </ul>
+                </section>
+
+                <!-- 4. Struktur Feistel -->
+                <section id="feistel" class="card p-4 mb-4">
+                    <h3 class="fw-bold text-dark mb-3"><i class="bi bi-hash text-primary me-2"></i> 4. Struktur Feistel</h3>
+                    <p>S-DES menerapkan arsitektur <strong>Feistel Cipher</strong> (Jaringan Feistel). Desain ini sangat populer karena proses enkripsi dan dekripsi menggunakan struktur algoritma yang hampir identik. Perbedaannya hanya terletak pada urutan penggunaan subkey putaran.</p>
+                    
+                    <div class="row align-items-center g-3">
+                        <div class="col-md-7">
+                            <h6 class="fw-bold text-primary">Cara Kerja Jaringan Feistel S-DES:</h6>
+                            <ol>
+                                <li>Blok data 8-bit dibagi menjadi dua bagian 4-bit: Kiri (L) dan Kanan (R).</li>
+                                <li>Bagian kanan (R) dimasukkan ke dalam fungsi pemetaan <code>F</code> bersama dengan subkey putaran.</li>
+                                <li>Hasil fungsi <code>F</code> di-XOR dengan bagian kiri (L).</li>
+                                <li>Hasil XOR tersebut menjadi bagian kiri baru, sementara bagian kanan asli (R) dipindahkan ke bagian kiri (proses Swap).</li>
+                                <li>Proses diulangi untuk putaran berikutnya.</li>
+                            </ol>
+                        </div>
+                        <div class="col-md-5 bg-light p-3 rounded text-center">
+                            <div class="border p-2 rounded bg-white font-monospace text-start small">
+                                <strong>Skema Feistel Putaran-i:</strong><br>
+                                L[i] = R[i-1]<br>
+                                R[i] = L[i-1] &oplus; F(R[i-1], K[i])<br><br>
+                                <strong>Hasil Akhir Round 2:</strong><br>
+                                Tanpa pertukaran (swap) tambahan, langsung digabungkan lalu dilewatkan ke IP&sup1;&#8315;&sup1;.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. Perbedaan -->
+                <section id="perbedaan" class="card p-4 mb-4">
+                    <h3 class="fw-bold text-dark mb-3"><i class="bi bi-hash text-primary me-2"></i> 5. Perbedaan DES vs S-DES</h3>
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle">
+                            <thead class="table-primary text-center">
+                                <tr>
+                                    <th>Karakteristik</th>
+                                    <th>Full DES</th>
+                                    <th>Simplified DES (S-DES)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="fw-semibold">Ukuran Blok Data</td>
+                                    <td>64 Bit</td>
+                                    <td class="text-primary fw-semibold">8 Bit</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-semibold">Ukuran Kunci Utama</td>
+                                    <td>56 Bit (Paritas 64 Bit)</td>
+                                    <td class="text-primary fw-semibold">10 Bit</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-semibold">Ukuran Kunci Putaran</td>
+                                    <td>48 Bit</td>
+                                    <td class="text-primary fw-semibold">8 Bit</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-semibold">Jumlah Putaran</td>
+                                    <td>16 Putaran</td>
+                                    <td class="text-primary fw-semibold">2 Putaran</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-semibold">Jumlah S-Box</td>
+                                    <td>8 S-Box (6-bit input, 4-bit output)</td>
+                                    <td class="text-primary fw-semibold">2 S-Box (4-bit input, 2-bit output)</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-semibold">Keamanan</td>
+                                    <td>Rentan (Digantikan oleh AES)</td>
+                                    <td class="text-danger fw-semibold">Sangat Tidak Aman (Hanya untuk Edukasi)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 6. Kelebihan & Kekurangan -->
+                <section id="kelebihan" class="card p-4 mb-4">
+                    <h3 class="fw-bold text-dark mb-3"><i class="bi bi-hash text-primary me-2"></i> 6. Kelebihan & Kekurangan</h3>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded bg-success-subtle h-100">
+                                <h5 class="fw-bold text-success"><i class="bi bi-plus-circle-fill"></i> Kelebihan S-DES</h5>
+                                <ul class="mb-0 ps-3">
+                                    <li><strong>Sederhana:</strong> Sangat mudah digambarkan alurnya secara matematis dan logis.</li>
+                                    <li><strong>Mudah Ditracking:</strong> Dapat diselesaikan secara manual di kertas dalam waktu 5-10 menit.</li>
+                                    <li><strong>Alat Bantu Ajar Terbaik:</strong> Membantu mahasiswa memahami prinsip enkripsi blok cipher modern tanpa kerumitan data yang besar.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded bg-danger-subtle h-100">
+                                <h5 class="fw-bold text-danger"><i class="bi bi-dash-circle-fill"></i> Kekurangan S-DES</h5>
+                                <ul class="mb-0 ps-3">
+                                    <li><strong>Tidak Aman:</strong> Ruang kunci hanya memiliki 2^10 = 1024 kemungkinan kunci, yang dapat dipecahkan dalam fraksi milidetik di komputer mana pun.</li>
+                                    <li><strong>Efek Longsor Rendah:</strong> Perubahan kecil pada input tidak terlalu mempengaruhi perubahan dramatis pada output karena putaran yang terlalu sedikit (hanya 2).</li>
+                                    <li><strong>Tidak Dapat Dipakai di Dunia Nyata:</strong> Dilarang keras digunakan untuk mengamankan data komersial atau komunikasi aktual.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. Penerapan -->
+                <section id="penerapan" class="card p-4">
+                    <h3 class="fw-bold text-dark mb-3"><i class="bi bi-hash text-primary me-2"></i> 7. Contoh Penerapan</h3>
+                    <p>Meskipun tidak digunakan dalam produk komersial nyata, S-DES memiliki beberapa penerapan yang krusial:</p>
+                    <ul>
+                        <li><strong>Praktikum Kriptografi:</strong> Sebagai tugas pemrograman dasar bagi mahasiswa teknik informatika atau keamanan siber untuk memprogram algoritma simetris pertama mereka.</li>
+                        <li><strong>Konseptualisasi Kunci Simetris:</strong> Memahami bagaimana proses permutasi bit dan tabel substitusi (S-Box) bekerja sama untuk menciptakan sifat <em>confusion</em> (kebingungan) dan <em>diffusion</em> (penyebaran) data.</li>
+                        <li><strong>Ujian Akademis:</strong> Digunakan oleh dosen untuk menguji pemahaman mahasiswa secara tertulis di lembar kertas.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="backToTopBtn" class="back-to-top" title="Kembali ke atas">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer class="py-4 mt-5 border-top bg-light text-center">
+        <div class="container">
+            <p class="text-muted mb-0">&copy; 2026 S-DES Interactive Learning Simulator. Dibuat untuk kepentingan edukasi mahasiswa.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle with Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+</body>
+</html>

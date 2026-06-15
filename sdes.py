@@ -153,6 +153,16 @@ class Trace:
     after_final_xor_round2: List[int] = field(default_factory=list)
     result_of_round_function_fk2: List[int] = field(default_factory=list)
     final_result: List[int] = field(default_factory=list)
+    
+    # S-Box row & col index values
+    s0_round1_row: int = 0
+    s0_round1_col: int = 0
+    s1_round1_row: int = 0
+    s1_round1_col: int = 0
+    s0_round2_row: int = 0
+    s0_round2_col: int = 0
+    s1_round2_row: int = 0
+    s1_round2_col: int = 0
 
 
 def sdes_key_generator(input_key: Sequence[int], trace: Trace | None = None) -> Tuple[List[int], List[int]]:
@@ -187,6 +197,12 @@ def mapping_function(input_string: Sequence[int], key: Sequence[int], current_ro
     post_ep_string = ep(input_string)
     xored = xor(post_ep_string, key)
     left_string, right_string = split_string(xored)
+    
+    s0_row = (left_string[0] << 1) + left_string[3]
+    s0_col = (left_string[1] << 1) + left_string[2]
+    s1_row = (right_string[0] << 1) + right_string[3]
+    s1_col = (right_string[1] << 1) + right_string[2]
+    
     sbox_left = sbox(left_string, 0)
     sbox_right = sbox(right_string, 1)
     output_string = p4(sbox_left + sbox_right)
@@ -200,6 +216,10 @@ def mapping_function(input_string: Sequence[int], key: Sequence[int], current_ro
             trace.after_s0_round1 = sbox_left
             trace.after_s1_round1 = sbox_right
             trace.after_p4_round1 = output_string
+            trace.s0_round1_row = s0_row
+            trace.s0_round1_col = s0_col
+            trace.s1_round1_row = s1_row
+            trace.s1_round1_col = s1_col
         else:
             trace.after_ep_round2 = post_ep_string
             trace.after_xor_k2 = xored
@@ -208,6 +228,10 @@ def mapping_function(input_string: Sequence[int], key: Sequence[int], current_ro
             trace.after_s0_round2 = sbox_left
             trace.after_s1_round2 = sbox_right
             trace.after_p4_round2 = output_string
+            trace.s0_round2_row = s0_row
+            trace.s0_round2_col = s0_col
+            trace.s1_round2_row = s1_row
+            trace.s1_round2_col = s1_col
 
     return output_string
 
