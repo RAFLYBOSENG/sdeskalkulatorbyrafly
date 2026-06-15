@@ -1,110 +1,292 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simulasi Algoritma DES</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	<title>S-DES Calculator</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icons/logo.png') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/select2/select2.min.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}" />
+	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+	{% macro render_bits(bits) -%}
+		{% for bit in bits %}<td>{{ bit }}</td>{% endfor %}
+	{%- endmacro %}
+
+	{% macro render_table(bits) -%}
+		<table><tbody><tr>{{ render_bits(bits) }}</tr></tbody></table>
+	{%- endmacro %}
+
+	{% macro render_split(left_bits, right_bits, left_label, right_label) -%}
+		<div class="splitTableContainer">
+			<div class="splitTable">
+				<p class="removeTopMargin">{{ left_label }}</p>
+				{{ render_table(left_bits) }}
+			</div>
+			<div class="splitTable">
+				<p class="removeTopMargin">{{ right_label }}</p>
+				{{ render_table(right_bits) }}
+			</div>
+		</div>
+	{%- endmacro %}
 </head>
-<body>
-  <header class="header">
-    <div class="header-inner">
-      <div class="logo">
-        <span class="logo-icon">🔐</span>
-        <div>
-          <h1>Simulasi Algoritma DES</h1>
-          <p class="subtitle">Data Encryption Standard — Visualisasi Lengkap Key Schedule &amp; Feistel Network</p>
-        </div>
-      </div>
-    </div>
-  </header>
 
-  <main class="container">
-    <section class="panel learning-panel">
-      <h2>Panduan Rumus DES</h2>
-      <p class="section-desc">Setiap langkah di bawah dilengkapi rumus dan aturan perhitungan agar Anda dapat mempelajari algoritma secara mandiri.</p>
-      <div id="learning-overview"></div>
-    </section>
+<body id="top">
+	<button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+	<div class="container-contact100">
+		<div class="wrap-contact100">
+			<form class="contact100-form validate-form" id="form" method="post">
+				<span class="contact100-form-title">
+					Simplified DES (S-DES) Calculator <br> (Web Based)
+				</span>
 
-    <section class="panel input-panel">
-      <h2>Input &amp; Kontrol</h2>
-      <form id="des-form">
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="input-data">Plaintext / Ciphertext (64-bit)</label>
-            <input type="text" id="input-data" placeholder="Biner atau Hex, contoh: 0123456789ABCDEF">
-            <span class="hint">Format: heksadesimal (16 karakter) atau biner (64 bit)</span>
-          </div>
-          <div class="form-group">
-            <label for="input-key">Kunci (64-bit)</label>
-            <input type="text" id="input-key" placeholder="Biner atau Hex, contoh: 133457799BBCDFF1">
-            <span class="hint">Kunci 64-bit (56 bit efektif + 8 parity bit)</span>
-          </div>
-        </div>
+				<div class="wrap-input100">
+					<span class="label-input100">8-bit binary Plaintext atau Ciphertext</span>
+					<input class="input100" type="text" placeholder="Enter 8-bit binary" id="inputText" name="inputText" maxlength="8" value="{{ plaintext }}" />
+					<span class="focus-input100"></span>
+				</div>
 
-        <div class="form-row">
-          <fieldset class="mode-fieldset">
-            <legend>Mode Operasi</legend>
-            <label class="radio-label">
-              <input type="radio" name="mode" id="mode-encrypt" value="encrypt" checked>
-              Enkripsi
-            </label>
-            <label class="radio-label">
-              <input type="radio" name="mode" id="mode-decrypt" value="decrypt">
-              Dekripsi
-            </label>
-          </fieldset>
+				<div class="wrap-input100">
+					<span class="label-input100">10-bit binary key</span>
+					<input class="input100" type="text" placeholder="Enter 10-bit binary key" id="inputKey" name="inputKey" maxlength="10" value="{{ key }}" />
+					<span class="focus-input100"></span>
+				</div>
 
-          <div class="btn-group">
-            <button type="button" id="btn-process" class="btn btn-primary">Proses</button>
-            <button type="button" id="btn-roundtrip" class="btn btn-secondary">Round-Trip Test</button>
-            <button type="button" id="btn-reset" class="btn btn-outline">Reset / Clear</button>
-          </div>
-        </div>
-      </form>
+				<div class="wrap-input100">
+					<span class="label-input100">Enkripsi atau Dekripsi</span>
+					<div>
+						<input type="radio" id="startMeChecked" name="encryptFlag" value="encrypt" {% if mode != 'decrypt' %}checked{% endif %}> Encrypt
+						<input type="radio" name="encryptFlag" value="decrypt" {% if mode == 'decrypt' %}checked{% endif %}> Decrypt
+					</div>
+					<span class="focus-input100"></span>
+				</div>
 
-      <div id="error-box" class="error-box" role="alert"></div>
-    </section>
+				<div class="container-contact100-form-btn">
+					<div class="wrap-contact100-form-btn">
+						<button class="contact100-form-btn" type="submit" value="SUBMIT">SUBMIT</button>
+					</div>
+					<div class="wrap-contact100-form-btn">
+						<button class="contact100-form-btn-reset" type="reset">RESET</button>
+					</div>
+				</div>
+			</form>
 
-    <section id="result-section" class="result-section">
-      <div class="panel output-panel">
-        <h2>Output</h2>
-        <div class="output-grid">
-          <div class="output-item">
-            <label>Hasil (Biner)</label>
-            <div id="output-binary" class="output-value mono">—</div>
-          </div>
-          <div class="output-item">
-            <label>Hasil (Heksadesimal)</label>
-            <div id="output-hex" class="output-value hex">—</div>
-          </div>
-        </div>
-        <div id="roundtrip-result"></div>
-      </div>
+			{% if error_message %}
+			<div id="inputError">
+				<div class="alert alert-danger alert-dismissible ">
+					<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+					<strong>Info!</strong> {{ error_message }}
+				</div>
+			</div>
+			{% else %}
+			<div id="inputError" style="display: none"></div>
+			{% endif %}
 
-      <div class="tabs-layout">
-        <div class="panel">
-          <h2>Key Schedule</h2>
-          <p class="section-desc">Rumus: K⁺=PC-1(K) → C₀/D₀ → LS → PC-2 → K₁…K₁₆</p>
-          <div id="key-schedule" class="steps-container"></div>
-        </div>
+			<div id="TESTING"></div>
+			<br />
+			<hr class="mainDivider" />
 
-        <div class="panel">
-          <h2>Proses Enkripsi / Dekripsi</h2>
-          <p class="section-desc">Rumus: X⁺=IP(X) → L/R Feistel → IP⁻¹(R₁₆‖L₁₆)</p>
-          <div id="process-steps" class="steps-container"></div>
-        </div>
-      </div>
-    </section>
-  </main>
+			<div id="detailedOutput" {% if not show_output %}style="display: none"{% endif %}>
+				<div id="hasil">
+					<div class="alert alert-success  ">
+						<h5><strong>Hasil</strong></h5> <br>
+						<p id="finalResult">{{ result_bits | join('') }}</p>
+					</div>
+				</div>
 
-  <footer class="footer">
-    <p>Simulasi Edukasi DES — Ethical Hacking &copy; 2026</p>
-  </footer>
+				<div id="accordion">
+					<div class="card">
+						<div class="card-header" id="headingOne">
+							<h5 class="mb-0">
+								<button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+									Tampilkan Solusi Penyelesaian
+								</button>
+							</h5>
+						</div>
 
-  <script src="{{ url_for('static', filename='js/des-tables.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/des-formulas.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/des-core.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/des-ui.js') }}"></script>
+						<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+							<div class="card-body">
+								<h5>Diketahui:</h5><br>
+								<h6>Input</h6>
+								{{ render_table(trace.text) }}
+
+								<h6>Key</h6>
+								{{ render_table(trace.key) }}
+
+								<br />
+								<hr class="mainDivider" />
+
+								<h5><strong>Generate Keys (K1 & K2)</strong></h5><br>
+								<h6>Acak Key yang telah diinputkan dengan P10 (3,5,2,7,4,10,1,,9,8,6)</h6>
+								{{ render_table(trace.key) }}
+								<br>
+								<h6>Hasil setelah dilakukan permutasi P10</h6>
+								{{ render_table(trace.after_p10_key) }}
+								<br>
+								<h6>Bagi Key P10 menjadi 2 bagian</h6>
+								{{ render_split(trace.after_first_split_left, trace.after_first_split_right, 'Bagian kiri', 'Bagian kanan') }}
+								<br>
+								<h6>Lakukan pergeseran ke kiri atau Left Shift sebanyak 1 kali (LS-1)</h6>
+								{{ render_split(trace.after_left_ls1, trace.after_right_ls1, 'Bagian kiri LS-1', 'Bagian kanan LS-1') }}
+								<br><br>
+								<h5><strong>Mencari K1</strong></h5><br>
+								<h6>Untuk menentukkan K1, selesaikan dengan mengambil hasil pergeseran dengan permutasi P8 (6,3,7,4,8,5,10,9)</h6>
+								<br>
+								<h6>hasil K1 :</h6>
+								{{ render_table(trace.sub_key_k1) }}
+								<br>
+								<h5><strong>Mencari K2</strong></h5><br>
+								<h6>Lakukan pergeseran ke kiri atau Left Shift sebanyak 2 kali pada hasil LS-1 (LS-2)</h6>
+								{{ render_split(trace.after_left_ls2, trace.after_right_ls2, 'Bagian kiri LS-2', 'Bagian kanan LS-2') }}
+								<h6>Untuk menentukkan K2, selesaikan dengan mengambil hasil LS-2 dengan permutasi P8 (6,3,7,4,8,5,10,9)</h6>
+								<br>
+								<h6>Hasil K2 :</h6>
+								{{ render_table(trace.sub_key_k2) }}
+								<br />
+								<hr class="mainDivider" />
+
+								<h5><strong>Proses Enkripsi/Dekripsi</strong></h5><br>
+								<h6>Input</h6>
+								{{ render_table(trace.text) }}
+								<h6>K1</h6>
+								{{ render_table(trace.sub_key_k1) }}
+								<h6>K2</h6>
+								{{ render_table(trace.sub_key_k2) }}
+								<br>
+								<h6>Ubah 8-bit plaintext/ciphertext dengan initial permutation IP (2,6,3,1,4,8,5,7)</h6>
+								<h6>Hasil :</h6><br>
+								{{ render_table(trace.after_ip) }}
+
+								<br />
+								<hr class="inBetweenDivider" />
+
+								<h5>Round Function 1</h5><br>
+
+								<h6>Bagi IP menjadi 2 bagian</h6>
+								{{ render_split(trace.after_ip_split_left, trace.after_ip_split_right, 'Bagian kiri IP', 'Bagian kanan IP') }}
+								<br>
+								<h6>Ambil 4-bit bagian KANAN, lakukan Expansion Permutation (Ep) (4,1,2,3,2,3,4,1)</h6>
+								{{ render_table(trace.after_ep_round1) }}
+								<br>
+								<h6>XOR dengan: K1 (untuk encrypt) // K2 (untuk decrypt)</h6>
+								{{ render_table(trace.after_xor_k1) }}
+								<br>
+								<h6>Bagi hasil XOR menjadi 2 bagian</h6>
+								{{ render_split(trace.after_xor_k1_split_left, trace.after_xor_k1_split_right, 'Bagian kiri hasil XOR', 'Bagian kanan hasil XOR') }}
+								<br>
+
+								<h6>Hasil perhitungan Substitions S-BOX</h6>
+								{{ render_split(trace.after_s0_round1, trace.after_s1_round1, 'S-box S0', 'S-box S1') }}
+								<br>
+								<h6>Hasil S-Box diacak oleh P4 (2,4,3,1)</h6>
+								{{ render_table(trace.after_p4_round1) }}
+								<br>
+								<h6>XOR oleh 4-bit KIRI DARI HASIL IP</h6>
+								{{ render_table(trace.after_final_xor_round1) }}
+								<br>
+								<h6>Gabungkan dengan 4-bit KANAN HASIL IP</h6>
+								{{ render_table(trace.result_of_round_function_fk1) }}
+
+								<br />
+
+								<h6>Lakukan Swap (SW)</h6>
+								{{ render_table(trace.after_switch) }}
+
+								<br />
+								<hr class="inBetweenDivider" />
+
+								<h5>Round Function 2</h5><br>
+
+								<h6>Bagi SW menjadi 2 bagian</h6>
+								{{ render_split(trace.after_switch_split_left, trace.after_switch_split_right, 'Bagian kiri SW', 'Bagian kanan SW') }}
+								<br>
+								<h6>Ambil 4-bit bagian KANAN, lakukan Expansion Permutation (Ep) (4,1,2,3,2,3,4,1)</h6>
+								{{ render_table(trace.after_ep_round2) }}
+								<br>
+								<h6>XOR dengan: k2 (untuk encrypt) // k1 (untuk decrypt)</h6>
+								{{ render_table(trace.after_xor_k2) }}
+								<br>
+								<h6>Bagi hasil XOR menjadi 2 bagian</h6>
+								{{ render_split(trace.after_xor_k2_split_left, trace.after_xor_k2_split_right, 'Bagian kiri hasil XOR', 'Bagian kanan hasil XOR') }}
+								<br>
+								<h6>Proses Substitions Box</h6>
+								{{ render_split(trace.after_s0_round2, trace.after_s1_round2, 'S-box S0', 'S-box S1') }}
+								<br>
+								<h6>Hasil S-Box diacak oleh P4</h6>
+								{{ render_table(trace.after_p4_round2) }}
+								<br>
+								<h6>XOR oleh 4-bit KIRI DARI HASIL SW</h6>
+								{{ render_table(trace.after_final_xor_round2) }}
+								<br>
+								<h6>Gabungkan dengan 4-bit KANAN HASIL SW</h6>
+								{{ render_table(trace.result_of_round_function_fk2) }}
+
+								<br />
+								<hr class="inBetweenDivider" />
+
+								<h6>Dari hasil pengacakan dengan IP Inverse (4,1,3,5,7,2,8,6), maka didapatkan hasil</h6><br>
+								<h6><strong><a href="#hasil">Lihat Hasil</a></strong></h6>
+								<br />
+								<hr class="mainDivider" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<footer>
+				<div class="copyright text-center">
+					&copy; 2026 <span>S-DES-Rafly-Boseng</span>
+				</div>
+			</footer>
+		</div>
+
+	</div>
+
+	<script type="text/javascript">
+		{% if show_output %}
+		$("#detailedOutput").show();
+		{% else %}
+		$("#detailedOutput").hide();
+		{% endif %}
+		$("#inputError").hide();
+		$("#startMeChecked").prop("checked", true);
+	</script>
+
+	<script>
+		var mybutton = document.getElementById("myBtn");
+		window.onscroll = function () {
+			scrollFunction()
+		};
+
+		function scrollFunction() {
+			if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+				mybutton.style.display = "block";
+			} else {
+				mybutton.style.display = "none";
+			}
+		}
+
+		function topFunction() {
+			document.body.scrollTop = 0;
+			document.documentElement.scrollTop = 0;
+		}
+	</script>
+
+	<div id="dropDownSelect1"></div>
+
+	<script src="{{ url_for('static', filename='vendor/jquery/jquery-3.2.1.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='vendor/select2/select2.min.js') }}"></script>
+	<script>
+		$(".selection-2").select2({
+			minimumResultsForSearch: 20,
+			dropdownParent: $("#dropDownSelect1"),
+		});
+	</script>
 </body>
+
 </html>
